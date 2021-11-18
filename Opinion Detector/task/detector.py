@@ -25,12 +25,14 @@ class OpinionDetector:
         self.my_df = pd.DataFrame(dataset[1:], columns=dataset[0])
 
     def create_lemma_column(self):
+        self.my_df['Lemmas'] = self.my_df['Review'].apply(lambda x: self.text_processor(x))
 
     def text_processor(self, text):
         word_list = word_tokenize(text.lower())  # Lists individual words
-        word_list = self.lemmatizer(word_list)  # converts to a dictionary form of lemma
         word_list = self.clean_list(word_list)  # remove stop words and punctuation
         word_list = self.pos_sort(word_list)  # filters out only selected pos
+        word_list = self.lemmatizer(word_list)  # converts to a dictionary form of lemma
+        print(word_list[:7])
         return word_list
 
     @staticmethod
@@ -61,7 +63,6 @@ if __name__ == '__main__':
         corpus_file = input()
         # corpus_file = 'SAR14.txt'
     corpus = OpinionDetector(corpus_file)
-
-
-    print(corpus.my_df.head())
-    print(corpus.my_df.tail())
+    corpus.create_lemma_column()
+    print(corpus.my_df['Lemmas'].head())
+    print(corpus.my_df['Lemmas'].tail())
